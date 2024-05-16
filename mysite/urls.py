@@ -11,6 +11,10 @@ urlpatterns = [
     path('', include('cakezone.urls')),
     path('register/', views.register, name='register'),
     path('login/', views.login, name='login'),
+    # path('', include('billing.urls')),
+    path('', include('customers.urls')),
+    path('', include('product.urls')),
+    path('', include('chefs.urls')),
 ]
 
 if settings.DEBUG:
