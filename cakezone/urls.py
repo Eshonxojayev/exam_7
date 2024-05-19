@@ -1,6 +1,13 @@
 from django.urls import path, include
 from cakezone import views
 
+
+# urls.py
+
+from .views import email_view
+
+
+
 urlpatterns = [
     path('index/', views.home, name='index'),
     path('about/', views.about, name='about'),
@@ -12,4 +19,5 @@ urlpatterns = [
     path('testimonial/', views.testimonial, name='testimonial'),
     path('', views.home, name='home'),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('email/', email_view, name='email_form'),
 ]

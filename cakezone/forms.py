@@ -3,6 +3,15 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 
+from django import forms
+from .models import Email
+
+class EmailForm(forms.ModelForm):
+    class Meta:
+        model = Email
+        fields = ['email']
+
+
 class RegisterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         # first call parent's constructor

@@ -1,11 +1,10 @@
 from django.contrib import admin
 from .models import Product, Category, Cart, Comment
-from import_export.admin import ImportExportModelAdmin
 # Register your models here.
 
 
 @admin.register(Category)
-class CategoryAdmin(ImportExportModelAdmin):
+class CategoryAdmin(admin.ModelAdmin):
     list_display = ('title', 'created_date')
     list_display_links = ('title',)
     search_fields = ('id', 'title')
@@ -14,7 +13,7 @@ class CategoryAdmin(ImportExportModelAdmin):
 
 
 @admin.register(Product)
-class ProductAdmin(ImportExportModelAdmin):
+class ProductAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'price', 'price_type', 'rating', 'created_date')
     list_display_links = ('id', 'title', 'price', 'price_type', 'rating', 'created_date')
     search_fields = ('id', 'title', 'rating', 'price', 'price_type')
@@ -23,7 +22,7 @@ class ProductAdmin(ImportExportModelAdmin):
 
 
 @admin.register(Comment)
-class CommentAdmin(ImportExportModelAdmin):
+class CommentAdmin(admin.ModelAdmin):
     list_display = ('id', 'text_xx', 'created_date')
     list_display_links =('id', 'text_xx', 'created_date')
     search_fields = ('id', 'created_date')
@@ -35,7 +34,7 @@ class CommentAdmin(ImportExportModelAdmin):
 
 
 @admin.register(Cart)
-class CartAdmin(ImportExportModelAdmin):
+class CartAdmin(admin.ModelAdmin):
     list_display = ('id', 'product_number', 'shipping_price', 'total_price', 'created_date')
     list_display_links = ('id', 'product_number', 'shipping_price')
     search_fields = ('id', 'product_number','created_date')

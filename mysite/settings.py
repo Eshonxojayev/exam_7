@@ -30,13 +30,13 @@ INSTALLED_APPS = [
     'customers',
     'billing',
     'product',
-    'api',
     'chefs',
     ###
     'rest_framework',
     'rest_framework.authtoken',
     # 'django_filters',
-    'drf_yasg'
+    'drf_yasg',
+    'account'
 ]
 
 MIDDLEWARE = [
@@ -134,3 +134,5 @@ MEDIA_URL = '/media/'
 LOGIN_REDIRECT_URL = 'home'
 
 LOGOUT_REDIRECT_URL = 'home'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

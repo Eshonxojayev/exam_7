@@ -1,12 +1,11 @@
 from django.contrib import admin
-from import_export.admin import ImportExportModelAdmin
 from .models import Country, City, Address, Customers
 
 # Register your models here.
 
 
 @admin.register(Country)
-class CountryAdmin(ImportExportModelAdmin):
+class CountryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'created_date')
     list_display_links = ('id', 'name', 'created_date')
     search_fields = ('id', 'name', 'created_date')
@@ -15,7 +14,7 @@ class CountryAdmin(ImportExportModelAdmin):
 
 
 @admin.register(City)
-class CityAdmin(ImportExportModelAdmin):
+class CityAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'created_date')
     list_display_links =('id', 'name', 'created_date')
     search_fields = ('id', 'name', 'created_date')
@@ -24,7 +23,7 @@ class CityAdmin(ImportExportModelAdmin):
 
 
 @admin.register(Address)
-class AddressAdmin(ImportExportModelAdmin):
+class AddressAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'created_date')
     list_display_links = ('id', 'name', 'created_date')
     search_fields = ('id', 'name', 'created_date')
@@ -33,7 +32,7 @@ class AddressAdmin(ImportExportModelAdmin):
 
 
 @admin.register(Customers)
-class CustomersAdmin(ImportExportModelAdmin):
+class CustomersAdmin(admin.ModelAdmin):
     list_display = ('id', 'first_name', 'last_name', 'username', 'email',)
     list_display_links = ('id', 'first_name', 'last_name', 'username', 'email')
     search_fields = ('id', 'first_name', 'last_name', 'username',)

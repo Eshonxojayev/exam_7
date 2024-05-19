@@ -9,12 +9,11 @@ from cakezone.urls import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('cakezone.urls')),
-    path('register/', views.register, name='register'),
-    path('login/', views.login, name='login'),
     # path('', include('billing.urls')),
     path('', include('customers.urls')),
     path('', include('product.urls')),
     path('', include('chefs.urls')),
+    path('', include('account.urls', namespace='account')),
 ]
 
 if settings.DEBUG:

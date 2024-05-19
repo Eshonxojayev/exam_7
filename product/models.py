@@ -42,7 +42,7 @@ class Product(models.Model):
     max_weight_type = models.CharField(max_length=10, choices=WeightType.choices, default=WeightType.kg)
     min_weight = models.FloatField(default=0)
     min_weight_type = models.CharField(max_length=10, choices=WeightType.choices, default=WeightType.kg)
-    comments = models.ManyToManyField(Comment, null=True, blank=True)
+    comments = models.ManyToManyField(Comment, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
     # top_products = models.ManyToManyField(null=True, blank=True)

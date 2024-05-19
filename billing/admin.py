@@ -1,9 +1,8 @@
 from django.contrib import admin
-from import_export.admin import ImportExportModelAdmin
 from .models import Billing
 
 @admin.register(Billing)
-class BillingAdmin(ImportExportModelAdmin):
+class BillingAdmin(admin.ModelAdmin):
     list_display = ('id', 'payment_type', 'comments_text', 'created_date')
     list_display_links = ('id', 'payment_type', 'created_date')
     search_fields = ('id', 'payment_type',)

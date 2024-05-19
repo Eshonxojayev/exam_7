@@ -1,11 +1,24 @@
 from django.shortcuts import render, redirect
-from .models import Product, Category, Profile,  Rate
+from .models import Product, Category,  Rate
 from .forms import RegisterForm
 from django import forms
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 
+
+from django.shortcuts import render, redirect
+from .forms import EmailForm
+
+def email_view(request):
+    if request.method == 'POST':
+        form = EmailForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('success')  # Redirect to a success page or wherever you want
+    else:
+        form = EmailForm()
+    return render(request, 'base.html', {'form': form})
 
 def about(request):
     return render(request, 'about.html')
@@ -39,38 +52,3 @@ def testimonial(request):
 
 def team(request):
     return render(request, 'team.html')
-
-
-def register(request):
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
-
-        if form.is_valid():
-            new_user = form.save(commit=False)
-            new_user.set_password(form.cleaned_data['password1'])
-            new_user.save()
-            Profile.objects.create(user=new_user)
-            return redirect('login')
-    else:
-        form = RegisterForm()
-    return render(request, 'registration/register.html', {'form':form})
-
-# def login(request):
-#     if request.method == 'POST':
-#         username = request.POST['username']
-#         password = request.POST['password']
-#         return render(request, 'registration/login.html', {'form':RegisterForm(), 'username':username, 'password':password})
-#
-#     return render(request, 'registration/login.html')
-
-def login(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('home')  # 'home' URL ни киритинг
-        else:
-            return HttpResponse("Invalid login")
-    return render(request, 'registration/login.html')
