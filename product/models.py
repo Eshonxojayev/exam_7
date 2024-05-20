@@ -10,9 +10,17 @@ from django.contrib.auth.models import User
 class Comment(models.Model):
     text = models.TextField()
     # customer = models.ForeignKey(Customers, on_delete=models.CASCADE)
+    search = models.TextField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True)
     created_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
     top_comment = models.TextField()
+
+    class Meta:
+        ordering = ['-created_date']
+        indexes = [
+            models.Index(fields=['-created_date']),
+        ]
 
     def __str__(self):
         return self.text[:10]
@@ -24,6 +32,14 @@ class Category(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
     category = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=50, unique=True)
+    search = models.TextField(max_length=100)
+
+    class Meta:
+        ordering = ['-created_date']
+        indexes = [
+            models.Index(fields=['-created_date']),
+        ]
 
     def __str__(self):
         return self.title
@@ -45,7 +61,17 @@ class Product(models.Model):
     comments = models.ManyToManyField(Comment, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
+    search = models.TextField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True)
     # top_products = models.ManyToManyField(null=True, blank=True)
+
+
+
+    class Meta:
+        ordering = ['-created_date']
+        indexes = [
+            models.Index(fields=['-created_date']),
+        ]
 
     def __str__(self):
         return self.title
@@ -58,3 +84,14 @@ class Cart(models.Model):
     total_price = models.FloatField(default=0)
     created_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
+    search = models.TextField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True)
+
+
+
+
+    class Meta:
+        ordering = ['-product_number']
+        indexes = [
+            models.Index(fields=['-product_number']),
+        ]

@@ -8,6 +8,12 @@ class Country(models.Model):
     last_update = models.DateTimeField(auto_now=True)
     search = models.CharField(max_length=50)
 
+    class Meta:
+        ordering = ['-created_date']
+        indexes = [
+            models.Index(fields=['-created_date']),
+        ]
+
     def __str__(self):
         return self.name
 
@@ -19,6 +25,12 @@ class City(models.Model):
     last_update = models.DateTimeField(auto_now=True)
     search = models.CharField(max_length=50)
 
+    class Meta:
+        ordering = ['-created_date']
+        indexes = [
+            models.Index(fields=['-created_date']),
+        ]
+
     def __str__(self):
         return self.name
 
@@ -28,6 +40,12 @@ class Address(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_date']
+        indexes = [
+            models.Index(fields=['-created_date']),
+        ]
 
     def __str__(self):
         return self.name
@@ -44,6 +62,14 @@ class Customers(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
     user_id = models.CharField(max_length=20, blank=True)
+    search = models.CharField(max_length=255, blank=True, null=True)
+
+
+    class Meta:
+        ordering = ['-user_id']
+        indexes = [
+            models.Index(fields=['-user_id']),
+        ]
 
     def __str__(self):
         return self.username

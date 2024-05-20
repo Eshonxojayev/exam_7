@@ -5,7 +5,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import LandingPageView, UsersLogoutView, UsersLoginView, UserRegisterView, ContactView, ProfileView
 
 
 router = DefaultRouter()
@@ -15,11 +14,9 @@ router.register('city', CityAPIView)
 router.register('country', CountryAPIView)
 
 urlpatterns = [
-    path('', LandingPageView.as_view(), name='landing'),
-    path('contact/', ContactView.as_view(), name='contact'),
-    path('profile/', ProfileView.as_view(), name='profile'),
     # path('', include(router.urls)),
     path('country/', CountryAPIView.as_view({'get': 'list'}), name='country'),
+    path('city', CityAPIView.as_view({'get': 'list'}), name='city'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

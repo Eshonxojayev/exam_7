@@ -1,13 +1,5 @@
 from django.shortcuts import render, redirect
 from .models import Product, Category,  Rate
-from .forms import RegisterForm
-from django import forms
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.http import HttpResponse
-
-
-from django.shortcuts import render, redirect
 from .forms import EmailForm
 
 def email_view(request):
@@ -36,9 +28,10 @@ def contact(request):
 def menu(request):
     products = Product.objects.all()
     categories = Category.objects.all()
+    search = request.GET.get('search')
     # locations = Location.objects.all()
     rates = Rate.objects.all()
-    context = {'products': products, 'categories': categories, 'rates': rates}
+    context = {'products': products, 'categories': categories, 'rates': rates, 'search': search}
     return render(request, 'menu.html', context)
 
 def service(request):

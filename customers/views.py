@@ -1,15 +1,12 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from .models import Country, City, Address, Customers
 from .serializers import CountrySerializer, CitySerializer, AddressSerializer, CustomersSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework import filters
-from django.contrib.auth import login, logout
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User
-from product.models import Category, Comment, Product, Cart
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
@@ -21,16 +18,37 @@ class CountryAPIView(ModelViewSet):
     serializer_class = CountrySerializer
     pagination_class = LimitOffsetPagination
     authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
-
-    @action(detail=True, methods=['GET'])
-    def search(self, request, *args, **kwargs):
-        country = self.request.query_params.get('country', None)
-        if country:
-            queryset = Country.objects.filter(name__icontains=country)
-            serializer = CountrySerializer(queryset, many=True)
-            return Response(serializer.data)
+    #
+    # @action(detail=True, methods=['GET'])
+    # def search(self, request, *args, **kwargs):
+    #     country = self.request.query_params.get('country', None)
+    #     if country:
+    #         queryset = Country.objects.filter(name__icontains=country)
+    #         serializer = CountrySerializer(queryset, many=True)
+    #         return Response(serializer.data)
+    #
+    # @action(detail=True, methods=['GET'])
+    # def city(self, request, *args, **kwargs):
+    #     city = self.request.query_params.get('city', None)
+    #     if city:
+    #         queryset = City.objects.filter(name__icontains=city)
+    #         serializer = CitySerializer(queryset, many=True)
+    #         return Response(serializer.data)
+    #
+    #     return Response(status=status.HTTP_404_NOT_FOUND)
+    #
+    # @action(detail=True, methods=['GET'])
+    # def address(self, request, *args, **kwargs):
+    #     address = self.request.query_params.get('address', None)
+    #     if address:
+    #         queryset = Address.objects.filter(name__icontains=address)
+    #         serializer = AddressSerializer(queryset, many=True)
+    #         return Response(serializer.data)
+    #
+    #     return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class CityAPIView(ModelViewSet):
@@ -41,13 +59,23 @@ class CityAPIView(ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
 
-    @action(detail=True, methods=['GET'])
-    def search(self, request, *args, **kwargs):
-        city = self.request.query_params.get('city', None)
-        if city:
-            queryset = City.objects.filter(name__icontains=city)
-            serializer = CitySerializer(queryset, many=True)
-            return Response(serializer.data)
+    # @action(detail=True, methods=['GET'])
+    # def search(self, request, *args, **kwargs):
+    #     city = self.request.query_params.get('city', None)
+    #     if city:
+    #         queryset = City.objects.filter(name__icontains=city)
+    #         serializer = CitySerializer(queryset, many=True)
+    #         return Response(serializer.data)
+    #
+    # @action(detail=True, methods=['GET'])
+    # def name(self, request, *args, **kwargs):
+    #     city = self.request.query_params.get('city', None)
+    #     if city:
+    #         queryset = City.objects.filter(name__icontains=city)
+    #         serializer = CitySerializer(queryset, many=True)
+    #         return Response(serializer.data)
+    #
+    #     return Response*(status.HTTP_200_OK)
 
 
 class AddressAPIView(ModelViewSet):
@@ -57,6 +85,37 @@ class AddressAPIView(ModelViewSet):
     authentication_classes = (TokenAuthentication, )
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+
+    # @action(detail=True, methods=['GET'])
+    # def search(self, request, *args, **kwargs):
+    #     address = self.request.query_params.get('address', None)
+    #     if address:
+    #         queryset = Address.objects.filter(name__icontains=address)
+    #         serializer = AddressSerializer(queryset, many=True)
+    #         return Response(serializer.data)
+    #
+    #     return (status.HTTP_200_OK)
+    #
+    # @action(detail=True, methods=['GET'])
+    # def cart(self, request, *args, **kwargs):
+    #     cart = self.request.query_params.get('cart', None)
+    #     if cart:
+    #         queryset = Address.objects.filter(cart__name__icontains=cart)
+    #         serializer = AddressSerializer(queryset, many=True)
+    #         return Response(serializer.data)
+    #
+    #     return (status.HTTP_200_OK)
+    #
+    # @action(detail=True, methods=['GET'])
+    # def cart_number(self, request, *args, **kwargs):
+    #     cart = self.request.query_params.get('cart', None)
+    #     if cart:
+    #         queryset = Address.objects.filter(cart__name__icontains=cart)
+    #         serializer = AddressSerializer(queryset, many=True)
+    #         return Response(serializer.data)
+    #
+    #     return (status.HTTP_200_OK)
+
 
 class CustomersAPIView(ModelViewSet):
     queryset = Customers.objects.all()
@@ -73,112 +132,17 @@ class CustomersAPIView(ModelViewSet):
         serializer = CustomersSerializer(queryset, many=True)
         return Response(serializer.data)
 
-class LandingPageView(View):
-    def get(self, request):
-        search = request.GET.get('search')
-        print(search)
-        if not search:
-            categories = Category.objects.all()
-            products = Product.objects.all()
-            comments = Comment.objects.all()
-            customers = Customers.objects.all()
-            number_product = 0
-            number_customer = 0
-            a = 1
-            for data in products:
-                number_product += 1
-            for data in customers:
-                number_customer += 1
-            context = {
-                'categories': categories,
-                'products': products,
-                'comments': comments,
-                'number_product': number_product,
-                'number_customer': number_customer,
-                'a': a,
-            }
-            return render(request, 'vegetable_web/index.html', context)
-        else:
-            categories = Category.objects.filter(title__icontains=search)
-            products = Product.objects.filter(title__icontains=search)
-            comments = Comment.objects.all()
-            customers = Customers.objects.all()
-            number_product = 0
-            number_customer = 0
-            a = 1
-            for data in products:
-                number_product += 1
-            for data in customers:
-                number_customer += 1
-            context = {
-                'categories': categories,
-                'products': products,
-                'comments': comments,
-                'number_product': number_product,
-                'number_customer': number_customer,
-                'a': a,
-            }
-            return render(request, 'vegetable_web/index.html', context)
+    @action(detail=True, methods=['GET'])
+    def create_date(self, request, *args, **kwargs):
+        customer_id = request.user.id
+        queryset = Customers.objects.filter(user_id=customer_id)
+        serializer = CustomersSerializer(queryset, many=True)
+        return Response(serializer.data)
 
+    @action(detail=True, methods=['GET'])
+    def city(self, request, *args, **kwargs):
+        city_id = request.user.id
+        queryset = Customers.objects.filter(city_id=city_id)
+        serializer = CustomersSerializer(queryset, many=True)
+        return Response(serializer.data)
 
-class UsersLoginView(View):
-    def get(self, request):
-        return render(request, 'auth/login_users.html')
-
-    def post(self, request):
-        username = request.POST['username']
-        password = request.POST['password']
-        data = {'username': username,
-                'password': password
-                }
-        login_form = AuthenticationForm(data=data)
-        if login_form.is_valid():
-            user = login_form.get_user()
-            login(request, user)
-            return redirect('landing')
-        else:
-            return render(request, 'vegetable_web/404.html')
-
-
-class UsersLogoutView(View):
-    def get(self, request):
-        logout(request)
-        return redirect('landing')
-
-
-class UserRegisterView(View):
-    def get(self, request):
-        return render(request, 'auth/register_user.html')
-
-    def post(self, request):
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        email = request.POST['email']
-        username = request.POST['username']
-        password1 = request.POST['password_1']
-        password2 = request.POST['password_2']
-        if password1 != password2:
-            return redirect('register')
-        else:
-            user = User(first_name=first_name, last_name=last_name, email=email, username=username)
-            user.set_password(password1)
-            user.save()
-            return redirect('login')
-
-
-class ContactView(View):
-    def get(self, request):
-        a = 1
-        return render(request, 'vegetable_web/contact.html', {'a': a})
-
-
-class ProfileView(View):
-    def get(self, request):
-        user = User.objects.get(username=request.user.username)
-        return render(request, 'vegetable_web/profile.html', {'user': user})
-
-
-# 404 page nimagadir xartolik beryapdi
-
-def my_custom_404_view(request, exception):
-    return render(request, 'vegetable_web/404.html', status=404)

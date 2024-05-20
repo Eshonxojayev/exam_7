@@ -2,11 +2,7 @@ from django.urls import path, include
 from cakezone import views
 
 
-# urls.py
-
 from .views import email_view
-
-
 
 urlpatterns = [
     path('index/', views.home, name='index'),

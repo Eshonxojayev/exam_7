@@ -6,7 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework import filters
 from .models import Product, Category, Comment, Cart
-# from customers.models import Customers
+from customers.models import Customers
 from django.contrib.auth.models import User
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -22,10 +22,27 @@ class ProductAPIView(ModelViewSet):
     search_fields = ('name', 'description')
 
     @action(detail=True, methods=['GET'])
-    def top_products(self, request, *args, **kwargs):
-        products = self.queryset.order_by('-price')[:5]
-        serializer = ProductSerializer(products, many=True)
+    def product(self, request, *args, **kwargs):
+        cake = self.get_object()
+        cake.product += 1
+        cake.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['GET'])
+    def top_listened(self, request, *args, **kwargs):
+        cake = self.get_queryset()
+        cake.cake.order_by('-listened')[:3]
+        serializer = ProductAPIView(cake, many=True)
         return Response(serializer.data)
+
+
+
+    @action(detail=True, methods=['GET'])
+    def top_comments(self, request, *args, **kwargs):
+        comments = self.queryset.order_by('-created_at')[:5]
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
+
 
 
 class CategoryAPIView(ModelViewSet):
@@ -36,12 +53,19 @@ class CategoryAPIView(ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name', 'description')
 
-    @action(detail=True, methods=['GET'])
-    def categories(self, request, *args, **kwargs):
-        categories = Category.objects.all()
-        page = self.paginate_queryset(categories)
-        serializer = self.get_serializer(page, many=True)
-        return self.get_paginated_response(serializer.data)
+    # @action(detail=True, methods=['GET'])
+    # def categories(self, request, *args, **kwargs):
+    #     categories = Category.objects.all()
+    #     page = self.paginate_queryset(categories)
+    #     serializer = self.get_serializer(page, many=True)
+    #     return self.get_paginated_response(serializer.data)
+    #
+    # @action(detail=True, methods=['GET'])
+    # def images(self, request, *args, **kwargs):
+    #     images = self.queryset.order_by('-created_at')
+    #     page = self.paginate_queryset(images)
+    #     serializer = self.get_serializer(page, many=True)
+    #     return self.get_paginated_response(serializer.data)
 
 
 class CommentAPIView(ModelViewSet):
@@ -58,6 +82,12 @@ class CommentAPIView(ModelViewSet):
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
 
+    @action(detail=True, methods=['GET'])
+    def less_comments_like(self, request, *args, **kwargs):
+        comments = self.queryset.order_by('-created_at')[:5]
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
+
 
 class CartAPIView(ModelViewSet):
     queryset = Cart.objects.all()
@@ -66,6 +96,19 @@ class CartAPIView(ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name', 'description')
+
+
+    @action(detail=True, methods=['GET'])
+    def cart_number(self, request, *args, **kwargs):
+        cart = Cart.objects.all()
+        serializer = CartSerializer(cart, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['GET'])
+    def cart_detail(self, request, *args, **kwargs):
+        cart = Cart.objects.all()
+        serializer = CartSerializer(cart, many=True)
+        return Response(serializer.data)
 
 
 class ProductListView(View):
@@ -89,7 +132,7 @@ class ProductListView(View):
                        "categories": categories,
                        "featured_products": featured_products,
                        }
-            return render(request, 'vegetable_web/shop.html', context)
+            return render(request, 'menu.html', context)
 
 
 class ProductDetailView(View):
@@ -111,32 +154,12 @@ class ProductDetailView(View):
             'comments': comments,
             'user': user,
         }
-        return render(request, 'vegetable_web/shop-detail.html', context)
+        return render(request, 'contact.html', context)
 
     def post(self, request, id):
         """ bu methodni customer emas user yozsa qabul qiladigan qilmoqchi edim lekin ozor kamchiliklar bor shuning uchun bu ishlamaydi """
         user = request.user
         text = request.POST.get('comment')
-        comment = Comment.objects.create(text=text, user=user)
-        product = Product.objects.get(id=id)
-        product.comments.add(comment)
-        product.save()
-        product = Product.objects.get(id=id)
-        featured_products = Product.objects.all()
-        categories = Category.objects.all()
-        customers = Customers.objects.all()
-        comments = Comment.objects.all()
-        user_id = request.user.id
-        user = User.objects.get(id=user_id)
-        context = {
-            'product': product,
-            "categories": categories,
-            'featured_products': featured_products,
-            'customers': customers,
-            'comments': comments,
-            'user': user,
-            }
-        return render(request, 'vegetable_web/shop-detail.html', context)
 
 
 class CartView(View):
